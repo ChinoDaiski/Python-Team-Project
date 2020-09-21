@@ -1,0 +1,419 @@
+
+1) 첨부한 helper.py 를 라인별로 분석하여 무엇을 하는 모듈인지 알아내도록 한다. 분석 결과는 과제 본문에 적는다
+
+-----------------------------------------------------------------------------------------------------------------
+def move_toward(pos, delta, target):
+    done = False
+    x,y = pos[0] + delta[0], pos[1] + delta[1]
+
+    if delta[0] > 0 and x >= target[0] or delta[0] < 0 and x <= target[0]:
+        done = True
+    if delta[1] > 0 and y >= target[1] or delta[1] < 0 and y <= target[1]:
+        done = True
+
+    pos = target if done else (x,y)
+
+    return (pos, done)
+-----------------------------------------------------------------------------------------------------------------
+인자로 ( 현재위치, delta, 도착위치 ) 를 받는 함수
+
+내부 변수
+1. bool형 done
+2. int형 x,y
+
+처음 done에 false를, x,y에는 delta값과 현재 위치를 더한 값을 집어넣고,
+현재 지점과 도착지점을 비교하여 도착했으면 done을 true로, 아니면 done을 false로 return한다.
+현재 위치가 도착지점이면 target을 아니면 x, y값을 넣고
+현재 위치와 done을 retrun 한다.
+
+--> 인자로 받은 값으로 이동하는 함수
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+def delta(pos, target, speed):
+    dx, dy = target[0] - pos[0], target[1] - pos[1]
+    distance = math.sqrt(dx**2 + dy**2)
+    if distance == 0: return 0, 0
+    return dx * speed / distance, dy * speed / distance
+-----------------------------------------------------------------------------------------------------------------
+인자로 ( 현재위치, 도착위치, 속도 ) 를 받는 함수
+
+내부 변수
+1. int형 dx, dy
+2. double형 distance
+
+dx, dy에 각각 도착위치와 현재위치의 차이값(스칼라)를 받고, distance에 최단거리 값을 넣는다.
+만약 도착지점과 현재 위치의 차이가 0이라면, 도착지점에 도달한 것이므로 0, 0을 return한다.
+아니라면, x좌표 차이값과 y좌표 차이값을 각각 거리로 나누고 속도를 곱하여 x좌표와 y좌표의 이동 거리를 return한다.
+
+--> 스피드에 따라 이동하는 거리를 return하는 함수
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+def move_toward_obj(obj):
+    if obj.target == None: return
+    pos, done = move_toward(obj.pos, obj.delta, obj.target)
+    if done:
+        obj.target = None
+        obj.delta = 0,0
+
+    obj.pos = pos
+-----------------------------------------------------------------------------------------------------------------
+인자로 오브젝트 1개를 받는 함수
+
+해당 오브젝트에는 target, delta, pos라는 변수가 존재한다.
+
+내부 변수
+1. int형 pos(x, y)
+2. bool형 done
+
+만약 인자로 받은 오브젝트의 target변수 내부의 값이 none이라면 함수를 빠져나오고,
+move_toward함수에 오브젝트의 현재위치, deltar값, 도착위치를 넘겨주고
+현재 위치와 도착했는지 여부를 받아온다. 내부 변수 pos와 done에 받아온다.
+만약 done이 true라면(도착지점에 도착했다면), 도착지점을 없애고 delta값에 0, 0 을 집어넣는다.
+마지막으로 오브젝트의 pos 변수에 내부변수 pos값을 넣어 오브젝트의 pos값을 업데이트 해준다.  
+
+--> 오브젝트를 이동시키는 함수
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+def set_target(obj, target):
+    obj.target = target
+    obj.delta = 0,0 if target is None else delta(obj.pos, target, obj.speed)
+-----------------------------------------------------------------------------------------------------------------
+인자로 오브젝트와 도착지점을 받는 함수
+
+해당 오브젝트는 target, delta라는 변수가 존재한다.
+
+함수에는 내부변수가 존재하지 않는다.
+
+오브젝트의 도착지점(obj.target)에 인자로 받은 도착지점(target)을 넣고, 오브젝트의 delta에 도착지점이 없으면
+0, 0을, 아니면 delta함수를 불러와 계산한 값을 집어넣는다. 
+
+--> 오브젝트가 도착하는 지점을 설정하는 함수
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+2) 이미지는 ../res/run_animation.png 와 ../res/grass.png 를 읽어들이도록 하며, 이미지 파일은 제출하지 않는다
+첨부한 모듈 helper 를 이용하여 마우스 버튼이 눌렸을 때 소년이 누른 곳을 향해 움직이도록 하는 프로그램을 작성하여 첨부 제출한다.
+함수는 move_toward() 와 delta() 만 써도 된다. 첨부는 py_02_06_학번_1.py 파일 하나만 하며 helper.py 는 첨부하지 않도록 한다. helper.py 와 같은 폴더에 둔 상태에서 실행 가능하도록 작성하도록 한다.
+
+다음 사항이 포함되도록 한다.
+- import helper.py 를 하고 helper.move_toward() 와 helper.delta() 를 사용한다.
+- 달려가는 모양의 애니메이션이 나온다
+- esc 키나 화면 우상단x버튼을 누르면 프로그램이 종료한다.
+-----------------------------------------------------------------------------------------------------------------
+from pico2d import *
+from helper import *
+
+RESOURCE_DIRECTORY = 'image/'
+
+Height = 600
+Width = 800
+
+global events
+global running
+
+class Grass:
+    def __init__(self):
+        self.pos = 400, 30
+        self.image = load_image(RESOURCE_DIRECTORY + 'grass.png')
+
+    def draw(self):
+        self.image.draw(self.pos[0], self.pos[1])
+
+    def update(self):
+        pass
+
+
+class Character:
+    def __init__(self):
+        self.pos = 20, 85   # 현재 위치
+        self.speed = 5      # 스피드
+        self.delta = 0, 0   # 움직이는 정도
+        self.target = self.pos  # 도착 지점
+        self.frame = 0      # 애니메이션 작업을 위한 프레임
+        self.image = load_image(RESOURCE_DIRECTORY + 'run_animation.png')
+        self.done = True    # 움직임을 표현하는 bool형 변수 True면 움직이지 않고, False면 움직인다.
+
+    def draw(self):
+        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.pos[0], self.pos[1])
+
+    def update(self):
+        self.frame = (self.frame + 1) % 8
+
+        # 움직이는 것이 끝나지 않았으면
+        if not self.done:
+            # 현재 위치가 도착 지점과 같다면
+            if self.pos == self.target:
+                # 움직임을 멈춘다.
+                self.done = True
+
+            # 현재 위치가 도착 지점과 같지 않다면
+            elif self.pos != self.target:
+                # x, y 이동 거리를 구하여 delta 에 넣고
+                self.delta = delta(self.pos, self.target, self.speed)
+                # 현재 위치와 움직임이 끝났는지에 대한 여부를 최신화 한다.
+                self.pos, self.done = move_toward(self.pos, self.delta, self.target)
+
+
+
+def handle_events():
+    global events
+    global running
+
+    events = get_events()
+    for event in events:
+        # 우상단 X 버튼을 누를 경우
+        if event.type == SDL_QUIT:
+            running = False
+
+        # esc 버튼을 누를 경우
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            running = False
+
+        # 마우스를 눌렀을 경우
+        elif event.type == SDL_MOUSEBUTTONDOWN:
+            # 캐릭터가 움직이지 않을 경우
+            if character.done:
+                character.target = event.x, Height - event.y - 1
+                # 캐릭터를 움직이게 함
+                character.done = False
+
+
+# -------------------------------------------------------------------------------------
+open_canvas(Width, Height)
+
+character = Character()
+grass = Grass()
+
+objects = character, grass
+
+running = True
+while running:
+    clear_canvas()
+
+    for obj in objects:
+        obj.draw()
+
+    for obj in objects:
+        obj.update()
+
+
+    update_canvas()
+    handle_events()
+    delay(0.04)
+
+close_canvas()
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+3) 다음 요구사항을 만족하도록 수정해본다. 어디까지 적용했는지 과제 본문에 적도록 한다.
+
+3-1)
+- 마우스 클릭을 1번 할 때 스피드 1.
+- 움직이는 도중에 클릭을 하면 스피드 2. 클릭 할 때마다 속도가 증가한다.
+- 일단 목적지에 도달하면 다음번 마우스 클릭을 할 때 다시 속도 1 부터 시작한다.
+
+3-2)
+- 마우스 클릭을 할 때마다 목적지 list 에 추가. 3-1 과 중복 적용 가능.
+- 목적지에 도달하면 다음 목적지를 향해 출발
+- 마지막 목적지에 도달하면 멈춤
+-----------------------------------------------------------------------------------------------------------------
+from pico2d import *
+from helper import *
+from Queue import *
+
+RESOURCE_DIRECTORY = 'image/'
+
+Height = 600
+Width = 800
+
+global events
+global running
+global q
+
+class Grass:
+    def __init__(self):
+        self.pos = 400, 30
+        self.image = load_image(RESOURCE_DIRECTORY + 'grass.png')
+
+    def draw(self):
+        self.image.draw(self.pos[0], self.pos[1])
+
+    def update(self):
+        pass
+
+
+class Character:
+    global q
+
+    def __init__(self):
+        self.pos = 20, 85   # 현재 위치
+        self.speed = 5      # 스피드
+        self.delta = 0, 0   # 움직이는 정도
+        self.target = self.pos  # 도착 지점
+        self.frame = 0      # 애니메이션 작업을 위한 프레임
+        self.image = load_image(RESOURCE_DIRECTORY + 'run_animation.png')
+        self.done = True    # 움직임을 표현하는 bool형 변수 True면 움직이지 않고, False면 움직인다.
+
+    def draw(self):
+        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.pos[0], self.pos[1])
+
+    def update(self):
+        self.frame = (self.frame + 1) % 8
+
+        # 움직이는 것이 끝나지 않았으면
+        if not self.done:
+            # 현재 위치가 도착 지점과 같다면
+            if self.pos == self.target:
+                # 움직임을 멈춘다.
+                self.done = True
+
+            # 현재 위치가 도착 지점과 같지 않다면
+            elif self.pos != self.target:
+                # x, y 이동 거리를 구하여 delta 에 넣고
+                self.delta = delta(self.pos, self.target, self.speed)
+                # 현재 위치와 움직임이 끝났는지에 대한 여부를 최신화 한다.
+                self.pos, self.done = move_toward(self.pos, self.delta, self.target)
+
+        if self.done:
+            # 큐를 확인하여 비었으면 그만 움직인다.
+            if len(q.queue) == 0:
+                # 움직이는 것을 그만둔다.
+                self.done = True
+
+            # 아니라면 다시 목표지점을 다시 설정한다.
+            else:
+                # 캐릭터의 목표지점을 설정
+                self.target = q.dequeue()
+                # 캐릭터를 움직이게 함
+                self.done = False
+                # 캐릭터의 스피드 재설정
+                self.speed = 5
+
+
+
+def handle_events():
+    global events
+    global running
+    global q
+
+    events = get_events()
+    for event in events:
+        # 우상단 X 버튼을 누를 경우
+        if event.type == SDL_QUIT:
+            running = False
+
+        # esc 버튼을 누를 경우
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            running = False
+
+        # 마우스를 눌렀을 경우
+        elif event.type == SDL_MOUSEBUTTONDOWN:
+            # 위치를 리스트에 더한다.
+            q.enqueue((event.x, Height - event.y - 1))
+            q.printQueue()
+
+            # 캐릭터가 움직이지 않을 경우
+            if character.done:
+                # 캐릭터의 목표지점을 설정
+                character.target = q.dequeue()
+                # 캐릭터를 움직이게 함
+                character.done = False
+                # 캐릭터의 스피드 재설정
+                character.speed = 5
+            # 캐릭터가 움직일 경우
+            elif not character.done:
+                # 캐릭터의 움직임을 더 빠르게 한다.
+                character.speed += 3
+
+
+# -------------------------------------------------------------------------------------
+
+
+open_canvas(Width, Height)
+
+q = Queue()
+character = Character()
+grass = Grass()
+
+objects = character, grass
+
+running = True
+while running:
+    clear_canvas()
+
+    for obj in objects:
+        obj.draw()
+
+    for obj in objects:
+        obj.update()
+
+
+    update_canvas()
+    handle_events()
+    delay(0.04)
+
+close_canvas()
+-----------------------------------------------------------------------------------------------------------------
+
+같이 첨부한 Queue.py를 같은 폴더에 넣어야 작동이 됩니다. 3-1번과 3-2번을 한꺼번에 적용시켰습니다.
+마우스 클릭을 하면 스피드가 초기 상태(5)가 되고, 클릭을 할때 마다 3씩 증가하고 목적지가 추가됩니다.
+목적지에 도달하면 스피드는 초기 상태(5)로 돌아가고, 목적지가 사라질 때 까지 다른 목적지를 향해 출발합니다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
