@@ -116,3 +116,22 @@
 
 
 ![개발 일정](https://user-images.githubusercontent.com/27701868/95699481-7d72fd80-0c7f-11eb-8d78-1652b759234e.PNG)
+
+
+
+
+## 7. main game state에 등장하는 game objecte들의 정보
+
+### 01. class 구성 정보
+
+
+### 02. 상호작용 정보
+
+
+### 03. 클래스별 핵심 코드에 대한 간단한 설명
+
+
+
+
+
+
