@@ -124,14 +124,24 @@
 
 ### 01. class 구성 정보
 
+Player	Enemy
+Bullet	Pattern	Generator
+Score	Background	Button
+
 
 ### 02. 상호작용 정보
+![main game state object class 상호작용 정보](https://user-images.githubusercontent.com/27701868/99965117-c0280980-2dd7-11eb-9dd3-79645dd59685.png)
 
 
 ### 03. 클래스별 핵심 코드에 대한 간단한 설명
-
-
-
+![background](https://user-images.githubusercontent.com/27701868/99965534-5825f300-2dd8-11eb-9a6b-b8520a599452.PNG)
+![bullet](https://user-images.githubusercontent.com/27701868/99965542-59572000-2dd8-11eb-9a29-2e3ef8cb4645.PNG)
+![button](https://user-images.githubusercontent.com/27701868/99965543-59572000-2dd8-11eb-9e36-f236005912f2.PNG)
+![enemey](https://user-images.githubusercontent.com/27701868/99965545-59efb680-2dd8-11eb-8c6a-ff77400641af.PNG)
+![generator](https://user-images.githubusercontent.com/27701868/99965548-5a884d00-2dd8-11eb-9d0d-ecf01986542c.PNG)
+![pattern](https://user-images.githubusercontent.com/27701868/99965550-5a884d00-2dd8-11eb-9128-f489a3202873.PNG)
+![player](https://user-images.githubusercontent.com/27701868/99965552-5b20e380-2dd8-11eb-9332-ddabf9ada8ff.PNG)
+![score](https://user-images.githubusercontent.com/27701868/99965555-5b20e380-2dd8-11eb-88d4-02867315c98a.PNG)
 
 
 
