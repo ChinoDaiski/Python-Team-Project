@@ -124,9 +124,9 @@
 
 ### 01. class 구성 정보
 
-Player	Enemy
-Bullet	Pattern	Generator
-Score	Background	Button
+1. Player	Enemy
+2. Bullet	Pattern	Generator
+3. Score	Background	Button
 
 
 ### 02. 상호작용 정보
