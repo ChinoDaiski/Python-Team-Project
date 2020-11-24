@@ -1,0 +1,5 @@
+State : 
+Enter, update, late_update, draw, handle_event, exit, pause
+
+Class
+Init, draw, update, late_update
