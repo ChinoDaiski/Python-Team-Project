@@ -6,7 +6,7 @@ from pico2d import *
 objects = []
 trashcan = []
 
-map_size = 0, 0
+map_size = (0, 0)
 
 def initMapSize(x, y):
     global map_size

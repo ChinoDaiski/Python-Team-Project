@@ -5,15 +5,16 @@
 from pico2d import *
 import gfw
 import background
+import pattern
 from generator import *
+import function
 
 resource = 'res/'
 
 MOVE_PPS = 500
-START_POS = 1825 // 2, 300
 PLAYER_MOVEMENT = 0.4
 
-PLAYER_SIZE = 50, 72
+PLAYER_SIZE = 80, 120
 Bullet_Size = 24, 30
 Bomb_Size = 80, 80
 
@@ -24,19 +25,22 @@ class Player:
 
         # 플레이어 이미지 초기화
         global image
-        image = gfw.load_image('res/sheet_player.png')
+        image = gfw.image.load('res/sheet_player.png')
 
         # 플레이어 움직임 관련 초기화
+
         global delta_x, delta_y, pos
-        pos = START_POS
+        x, y = gfw.world.getMapSize()
+        pos = x // 2, 100
         delta_x, delta_y = 0, 0
+        self.pos = pos
 
         # 플레이어의 이미지 출력을 위한 번호 (0 ~ 23)
         self.dx = 23 / 2
 
         # 플레이어 충돌 판정을 위한 반지름
-        global radius
-        radius = (image.w // 24) // 2
+        self.radius = (image.w // 24) // 2 // 2
+        
 
         # 총을 발사하고 있는 중인지 아닌지 확인하는 변수
         global bFire
@@ -66,9 +70,11 @@ class Player:
         self.bShotdown = False
         self.player_detroy_delta_time = 0
 
+        self.bullet_sound = load_music(resource + 'sound_player_bullet.wav')
+        self.bullet_sound.set_volume(1)
+
     def update(self):
-        global pos
-        x, y = pos
+        x, y = self.pos
     
         # 이번 프레임에 움직이는 양, delta_time으로 일괄적으로 조정
         x += delta_x * MOVE_PPS * gfw.delta_time
@@ -83,7 +89,7 @@ class Player:
         x = clamp(hw, x, map_size[0] - hw)
         y = clamp(hh + PLAYER_SIZE[1] // 2, y, map_size[1] - hh)
 
-        pos = x, y
+        self.pos = x, y
 
         # 플레이어 이미지 관련 값 조절
         if delta_x == -1:
@@ -115,7 +121,7 @@ class Player:
         # 탄과 관련된 값 조절
         global bFire, level, player_delta_time
         if bFire:
-            if player_delta_time > 1 / (7 + level * 2):
+            if player_delta_time > 1 / (12 + level * 3):
                 self.fire()
                 player_delta_time = 0
 
@@ -125,31 +131,30 @@ class Player:
         # 플레이어가 격추당했을 경우 실행되는 곳
         if self.bShotdown == True:
             self.player_detroy_delta_time += gfw.delta_time
-            idx = (int)(self.player_detroy_delta_time / (DestroyTime / (self.Mfidx * (self.Mfidy - self.last_line_image_count) + self.last_line_image_count)))
-            self.fidx = idx // self.Mfidx
-            self.fidy = idx - self.fidx * self.Mfidx
+
+            self.fidx, self.fidy = function.sprite_selector(self.Mfidx, self.Mfidy, self.last_line_image_count, DestroyTime, self.player_detroy_delta_time)
+
             if self.player_detroy_delta_time > DestroyTime:
                 gfw.world.remove(self)
            
 
     def draw(self):
-
-
         if not self.bShotdown:
             # 플레이어 그리기
-            x, y = pos
+            x, y = self.pos
             x -= PLAYER_SIZE[0] // 2
             y -= PLAYER_SIZE[1] // 2
             Pos = x, y
             image.clip_draw_to_origin(image.w // 24 * (int)(self.dx), 0, image.w // 24, image.h, *Pos, *PLAYER_SIZE)
+
         else:
             # 폭탄 그리기
-            x, y = pos
+            x, y = self.pos
             x -= Bomb_Size[0] // 2
             y -= Bomb_Size[1] // 2
             Pos = x, y
-            self.image_shot_down.clip_draw_to_origin(self.image_shot_down.w // self.Mfidx * self.fidy, self.image_shot_down.h // self.Mfidy * (self.Mfidy - self.fidx - 1), self.image_shot_down.w // 5, self.image_shot_down.h // 4, *Pos, *Bomb_Size)
-
+            function.sprite_draw(self.image_shot_down, self.Mfidx, self.Mfidy, self.fidx, self.fidy, *Pos, *Bomb_Size)
+           
     def handle_event(self, e):
         global delta_x, delta_y
         # =========
@@ -207,10 +212,12 @@ class Player:
                 self.destroy()
 
     def fire(self):
-        global pos
-        x, y = pos
+        x, y = self.pos
         y += (image.h // 2 + 20)
-        generate_bullet('player', 'player', x, y)
+        pattern.fire_pattern('player', x, y)
+        #generate_bullet('player', 'player', x, y)
+        self.bullet_sound.set_volume(10)
+        self.bullet_sound.play(1)
         
 
     def destroy(self):

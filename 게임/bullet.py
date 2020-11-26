@@ -13,10 +13,9 @@ MOVE_PPS = 200
 Bullet_Size = 24, 30
 
 class Bullet:
-    def __init__(self, image, kinds, x, y, speed, direction, alpha):
+    def __init__(self, image, x, y, speed, direction, alpha):
         # 총알의 이미지, 종류, 위치, 스피드, 이동 방향를 인자로 받음
-        self.image = gfw.load_image(image)
-        self.kind = kinds
+        self.image = gfw.image.load(image)
         self.pos = x, y
         self.speed = speed
         self.direction = direction # 이동 방향은 각도를 의미한다.
@@ -31,12 +30,14 @@ class Bullet:
         self.bb_top = get_canvas_height() + self.image.h
 
         self.alpha = alpha
+        self.angle = 0
 
 
     def update(self):
         x, y = self.pos
         dx, dy = self.speed * cos(self.direction * pi / 180), self.speed * sin(self.direction * pi / 180)
-        
+        self.angle = -math.atan2(dx, dy)
+
         x += dx * MOVE_PPS * gfw.delta_time
         y += dy * MOVE_PPS * gfw.delta_time
         
@@ -49,11 +50,13 @@ class Bullet:
 
         SDL_SetTextureBlendMode(self.image.texture, SDL_BLENDMODE_BLEND)
         SDL_SetTextureAlphaMod(self.image.texture, self.alpha)
-        x, y = self.pos
-        x -= Bullet_Size[0] // 2
-        y -= Bullet_Size[1] // 2
-        Pos = x, y
-        self.image.clip_draw_to_origin(0, 0, self.image.w, self.image.h, *Pos, *Bullet_Size)
+        # x, y = self.pos
+        # x -= Bullet_Size[0] // 2
+        # y -= Bullet_Size[1] // 2
+        # Pos = x, y
+        self.image.composite_draw(self.angle, '', *self.pos, *Bullet_Size)
+        #self.image.clip_draw_to_origin(0, 0, self.image.w, self.image.h, *Pos, *Bullet_Size)
+
 
     def out_of_screen(self):
         x, y = self.pos

@@ -11,7 +11,8 @@ import generator
 import stage_01
 
 
-player_bullet_speed = 4
+player_bullet_speed = 3
+enemy_bullet_speed = 1
 
 resource = 'res/'
 
@@ -26,29 +27,63 @@ Pattern = [ 'player', 'enemy', 'boss' ]
 def init():
     pass
 
-def fire_pattern(pattern_Name, x, y):
+def update():
+    pass
+
+def fire_pattern(pattern_Name, n, x, y):
     pos = x, y
-    blt = []
 
     # 플레이어가 총을 쏘는 패턴일 경우
+    #==================================================================================================================
     if pattern_Name == 'player':
         # image, kinds, pos, speed, direction
-        blt.append(bullet.Bullet(resource + 'bullet_player_sub.png', 'player', *pos, player_bullet_speed, 90, 100))
-        #gfw.world.add(gfw.layer.bullet, bullet)
-        return blt
+        blt = bullet.Bullet(resource + 'bullet_player_sub.png', *pos, player_bullet_speed, 90, 100)
+        gfw.world.add(gfw.layer.bullet, blt)
 
     elif pattern_Name == 'player_round':
         # image, kinds, pos, speed, direction
-        for n in range(30):
-            blt.append(bullet.Bullet(resource + 'bullet_player.png', 'player', *pos, player_bullet_speed, 360 // 30 * n, 100))
-        #gfw.world.add(gfw.layer.bullet, bullet)
-        return blt
+        for n in range(60):
+            blt = bullet.Bullet(resource + 'bullet_player_sub.png', *pos, player_bullet_speed, 360 // 60 * n, 100)
+            gfw.world.add(gfw.layer.bullet, blt)
         
     elif pattern_Name == 'player_n_way':
         # image, kinds, pos, speed, direction
         for n in range(20):
-            blt.append(bullet.Bullet(resource + 'bullet_player.png', 'player', *pos, player_bullet_speed, 90 / 20 * n + 45, 100))
-        #gfw.world.add(gfw.layer.bullet, bullet)
-        return blt
+            blt = bullet.Bullet(resource + 'bullet_player_sub.png', *pos, player_bullet_speed, 90 / 20 * n + 45, 100)
+            gfw.world.add(gfw.layer.bullet, blt)
+    #==================================================================================================================
         
 
+
+
+
+    # 적이 총을 쏘는 패턴일 경우
+    #==================================================================================================================
+    # 360도 기준으로 n개 발사
+    elif pattern_Name == 'enemyNormal_01':
+        for i in range(n):
+            blt = bullet.Bullet(resource + 'bullet_player.png', *pos, enemy_bullet_speed, 360 / n * i, 100)
+            gfw.world.add(gfw.layer.enemy_bullet, blt)
+
+    # 아랫부분으로 180도 기준으로 n개 발사
+    elif pattern_Name == 'enemyNormal_02':
+        for i in range(n):
+            blt = bullet.Bullet(resource + 'bullet_player.png', *pos, enemy_bullet_speed, 90 / n * i + 45 + 180, 100)
+            gfw.world.add(gfw.layer.enemy_bullet, blt)
+
+    # 플레이어를 향해 n개 발사
+    elif pattern_Name == 'enemyNormal_03':
+        for i in range(n):
+            player = gfw.world.object(gfw.layer.player, 0)
+            x, y = player.pos
+
+
+
+            blt = bullet.Bullet(resource + 'bullet_player.png', *pos, enemy_bullet_speed, 90 / n * i + 45 + 180, 100)
+            gfw.world.add(gfw.layer.enemy_bullet, blt)
+    #==================================================================================================================
+
+def get_degree(x, y, px, py):
+    dx = px - x
+    dy = py - y
+    return math.atan(dy / dx)

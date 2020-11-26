@@ -6,7 +6,10 @@ import gfw
 import background
 import player
 import generator
+import enemy
+import collision
 from score import Score
+
 
 import pyautogui
 
@@ -76,13 +79,30 @@ def enter():
     global font, font_size
     font_size = 50
     font = gfw.font.load(resource + 'ConsolaMalgun.ttf', font_size)
+    
+    global enemy
+    x = MAP_SIZE[0] // 2
+    y = MAP_SIZE[1]
+    enemy = enemy.enemy_Nomal('enemy01.png', 12, 'bomb01.png', 8, x, y, 'enemy01_bullet.png', 1, 100)
+    gfw.world.add(gfw.layer.enemy, enemy)
 
+    global bg_music
+    bg_music = load_wav(resource + 'stage01_background.wav')
+    bg_music.set_volume(50)
+    bg_music.play(1)
 
 def update():
+
     gfw.world.update()
     generator.update()
 
+    # if not gfw.world.count_at(gfw.layer.enemy) == 0:
+    #     for n in gfw.world.objects_at(gfw.layer.enemy):
+    #         print(n)
+
     score.score += 10
+    collision.check_collision()
+    print(gfw.world.count_at(gfw.layer.enemy_bullet))
 
 def draw():
 
