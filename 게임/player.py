@@ -214,7 +214,7 @@ class Player:
     def fire(self):
         x, y = self.pos
         y += (image.h // 2 + 20)
-        pattern.fire_pattern('player', x, y)
+        pattern.fire_pattern('player', 1, x, y)
         #generate_bullet('player', 'player', x, y)
         self.bullet_sound.set_volume(10)
         self.bullet_sound.play(1)

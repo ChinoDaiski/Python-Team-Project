@@ -99,8 +99,8 @@ class enemy_Nomal:
         self.bShotdown = True
 
     def shoot(self):
-        patternName = 'enemy%d' % self.pattern
-        pattern.fire_pattern(patternName, *self.pos)
+        patternName = 'enemyNormal_%d' % self.pattern
+        pattern.fire_pattern(patternName, 10, *self.pos)
 
 
 class enemy_Boss:

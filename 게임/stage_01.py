@@ -36,7 +36,7 @@ def enter():
     # bg_game = 게임 화면
     # player = 플레이어 화면
     # ui = ui 관련 화면
-    gfw.world.init(['bg', 'bg_game', 'player', 'bullet', 'enemy', 'enemy_bullet', 'ui'])
+    gfw.world.init(['bg', 'bg_game', 'player', 'bullet', 'enemy', 'enemy_bullet', 'special_enemy_bullet', 'ui'])
 
     # bg 설정
     global bg
@@ -76,20 +76,24 @@ def enter():
     gfw.world.add(gfw.layer.ui, Hiscore)
     Hiscore.score = 1
 
+    # 폰트 관련 초기화
     global font, font_size
     font_size = 50
     font = gfw.font.load(resource + 'ConsolaMalgun.ttf', font_size)
-    
-    global enemy
-    x = MAP_SIZE[0] // 2
-    y = MAP_SIZE[1]
-    enemy = enemy.enemy_Nomal('enemy01.png', 12, 'bomb01.png', 8, x, y, 'enemy01_bullet.png', 1, 100)
-    gfw.world.add(gfw.layer.enemy, enemy)
 
+    # 배경음악 관련 초기화
     global bg_music
     bg_music = load_wav(resource + 'stage01_background.wav')
     bg_music.set_volume(50)
     bg_music.play(1)
+
+    # 적 관련 초기화
+    global enemy
+    x = MAP_SIZE[0] // 2
+    y = MAP_SIZE[1]
+    enemy = enemy.enemy_Nomal('enemy01.png', 12, 'bomb01.png', 8, x, y, 'enemy01_bullet.png', 4, 100)
+    gfw.world.add(gfw.layer.enemy, enemy)
+
 
 def update():
 
@@ -102,7 +106,7 @@ def update():
 
     score.score += 10
     collision.check_collision()
-    print(gfw.world.count_at(gfw.layer.enemy_bullet))
+    #print(gfw.world.count_at(gfw.layer.enemy_bullet))
 
 def draw():
 
