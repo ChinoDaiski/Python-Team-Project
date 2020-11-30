@@ -8,6 +8,7 @@ import player
 import generator
 import enemy
 import collision
+import pattern
 from score import Score
 
 
@@ -40,16 +41,18 @@ def enter():
 
     # bg 설정
     global bg
-    bg = background.Background('bg_stage.png', 0, 0, get_canvas_width(), get_canvas_height(), 255)
-    gfw.world.add(gfw.layer.bg, bg)
+    #bg = background.Background('bg_stage.png', 0, 0, get_canvas_width(), get_canvas_height(), 255)
+    #gfw.world.add(gfw.layer.bg, bg)
 
     bg = background.Background('bg_stage.PNG', MAP_SIZE[0], 0, get_canvas_width() - MAP_SIZE[0], MAP_SIZE[1], 255)
     gfw.world.add(gfw.layer.ui, bg)
     bg = background.Background('bg_stage_right.PNG', MAP_SIZE[0], 0, get_canvas_width() - MAP_SIZE[0], MAP_SIZE[1], 50)
     gfw.world.add(gfw.layer.ui, bg)
+    bg = background.Background('reimu03.PNG', MAP_SIZE[0], 100, get_canvas_width() - MAP_SIZE[0], MAP_SIZE[1] // 2, 255)
+    gfw.world.add(gfw.layer.ui, bg)
 
-    bg = background.VertScrollBackground('bg_stage_stripe.png', MAP_SIZE[0], MAP_SIZE[1], 100)
-    bg.speed = 1000
+    bg = background.VertScrollBackground('bg_stage_03.png', MAP_SIZE[0], MAP_SIZE[1], 255)
+    bg.speed = 100
     gfw.world.add(gfw.layer.bg, bg)
 
     #image_left, image_right, x, y, cw, ch, standard_y, speed_down, speed_sideway01, speed_sideway02, speed_sideway03
@@ -58,11 +61,13 @@ def enter():
 
     bg = background.VertScrollBackground('clouds.png', 1825, 2000, 150)
     bg.speed = 40
-    gfw.world.add(gfw.layer.bg, bg)
+    #gfw.world.add(gfw.layer.bg, bg)
 
     # 플레이어 초기화
     global player
     player = player.Player()
+    player.level = 2
+    player.bullet_speed = 8
     gfw.world.add(gfw.layer.player, player)
 
     # 탄 관련 초기화
@@ -88,12 +93,13 @@ def enter():
     bg_music.play(1)
 
     # 적 관련 초기화
-    global enemy
+    global emy
     x = MAP_SIZE[0] // 2
     y = MAP_SIZE[1]
-    enemy = enemy.enemy_Nomal('enemy01.png', 12, 'bomb01.png', 8, x, y, 'enemy01_bullet.png', 4, 100)
-    gfw.world.add(gfw.layer.enemy, enemy)
-
+    
+    for n in range(100):
+        emy = enemy.enemy_Nomal('enemy01.png', 12, 1, 'enemy01_bomb.png', 5, 5, 1, x // 100 * n, y, 0, 0, 'enemy01_bullet.png', 4, 0, 100, 3, 10)
+        gfw.world.add(gfw.layer.enemy, emy)
 
 def update():
 
@@ -106,7 +112,10 @@ def update():
 
     score.score += 10
     collision.check_collision()
-    #print(gfw.world.count_at(gfw.layer.enemy_bullet))
+    
+    #print(gfw.world.count_at(gfw.layer.enemy))
+    
+    pattern.update()
 
 def draw():
 

@@ -1,5 +1,5 @@
 
-
+import math
 # 기타 기능 함수들 모음
 
 
@@ -18,3 +18,22 @@ def sprite_draw(image, Mfidx, Mfidy, fidx, fidy, x, y, px, py):
     pos = x, y
     size = px, py
     image.clip_draw_to_origin(image.w // Mfidx * fidy, image.h // Mfidy * (Mfidy - fidx - 1), image.w // 5, image.h // 4, *pos, *size)
+
+    
+# 인자로 현재 위치(x, y)와 도착 위치(px, py)를 받아 두 점 사이의 각도를 반환하는 함수
+def get_degree(x, y, px, py):
+    dx = px - x
+    dy = py - y
+    distance = math.sqrt(dx ** 2 + dy ** 2)
+    if distance == 0:
+        return 0
+
+    if dx == 0:
+        dx = 0.0000001
+    if dy == 0:
+        dy = 0.0000001
+    
+    dx, dy = dx / distance, dy / distance
+    angle = math.atan2(dy, dx) / math.pi * 180
+    
+    return angle

@@ -22,7 +22,7 @@ def check_collision():
     for player_bullet in gfw.world.objects_at(gfw.layer.bullet):
         for enemy in gfw.world.objects_at(gfw.layer.enemy):
             if collides_distance(player_bullet, enemy):
-                enemy.destroy()
+                enemy.getDamage(gfw.world.object(gfw.layer.player, 0).power)
                 gfw.world.remove(player_bullet)
 
     # enemy의 탄과 player의 충돌 판정

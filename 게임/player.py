@@ -15,7 +15,6 @@ MOVE_PPS = 500
 PLAYER_MOVEMENT = 0.4
 
 PLAYER_SIZE = 80, 120
-Bullet_Size = 24, 30
 Bomb_Size = 80, 80
 
 DestroyTime = 1.0
@@ -26,9 +25,9 @@ class Player:
         # 플레이어 이미지 초기화
         global image
         image = gfw.image.load('res/sheet_player.png')
+        self.bullet_image = gfw.image.load('res/bullet_player_sub.png')
 
         # 플레이어 움직임 관련 초기화
-
         global delta_x, delta_y, pos
         x, y = gfw.world.getMapSize()
         pos = x // 2, 100
@@ -47,8 +46,7 @@ class Player:
         bFire = False
         
         # 초당 나가는 탄알의 갯수를 조장하기 위한 레벨, 높을수록 많은 탄알이 나간다. 최대 4까지 조정 (0 ~ 4)
-        global level
-        level = 0
+        self.level = 0
 
         global player_delta_time
         player_delta_time = 0
@@ -72,6 +70,9 @@ class Player:
 
         self.bullet_sound = load_music(resource + 'sound_player_bullet.wav')
         self.bullet_sound.set_volume(1)
+        self.bullet_speed = 8
+
+        self.power = 1
 
     def update(self):
         x, y = self.pos
@@ -119,11 +120,12 @@ class Player:
             self.dx = 4
 
         # 탄과 관련된 값 조절
-        global bFire, level, player_delta_time
+        global bFire, player_delta_time
         if bFire:
-            if player_delta_time > 1 / (12 + level * 3):
-                self.fire()
-                player_delta_time = 0
+            if player_delta_time > 1 / (12 + self.level * 3):
+                if not self.bShotdown:
+                    self.fire()
+                    player_delta_time = 0
 
         # 플레이어의 델타타임
         player_delta_time += gfw.delta_time
@@ -214,8 +216,8 @@ class Player:
     def fire(self):
         x, y = self.pos
         y += (image.h // 2 + 20)
-        pattern.fire_pattern('player', 1, x, y)
-        #generate_bullet('player', 'player', x, y)
+        patternName = 'player_level_0%d' % self.level
+        pattern.fire_pattern(patternName, self.bullet_image, 1, x, y, self.bullet_speed)
         self.bullet_sound.set_volume(10)
         self.bullet_sound.play(1)
         

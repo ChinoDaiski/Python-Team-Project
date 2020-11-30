@@ -28,4 +28,4 @@ class Score:
 
     def update(self):
     	if self.display < self.score:
-            self.display += 1
+            self.display += 10
