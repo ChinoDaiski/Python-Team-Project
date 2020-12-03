@@ -94,3 +94,7 @@ def load(fn='world.pickle'):
     global objects
     with open(fn, 'rb') as f:
         objects = pickle.load(f)
+
+def getTrashcan():
+    global trashcan
+    return trashcan

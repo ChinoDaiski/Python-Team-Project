@@ -15,7 +15,6 @@ Bullet_Size = 24, 30
 RESOURCE = 'res/'
 
 
-
 # 인자로
 #==========================
 # 탄 이미지
@@ -57,13 +56,23 @@ class Bullet:
 
         self.target_object = []
 
+        # 베지어 곡선 처리를 위한 값 설정
+        self.bezier = 0, 0
+        self.t = 0.0
+        self.delta_time = 0
+
     def set_target(self, Object):
         if Object in gfw.world.objects_at(gfw.layer.enemy):
             self.target_object = Object
 
+    def set_Bezier(self, x, y):
+        self.bezier = x, y
+
 
     def update(self):
         global x, y, dx, dy
+        self.delta_time += gfw.delta_time
+        # if self.delta_time 
 
         # 자동 추적 기능
         if self.target_object in gfw.world.objects_at(gfw.layer.enemy):
@@ -73,6 +82,7 @@ class Bullet:
             dx = px - x
             dy = py - y
             distance = math.sqrt(dx ** 2 + dy ** 2)
+
             if distance == 0:
                 return 0
 
@@ -80,6 +90,12 @@ class Bullet:
                 dx = 0.0000001
             if dy == 0:
                 dy = 0.0000001
+
+            # if not self.bezier == 0, 0:
+            #     distance2 = math.sqrt(dx ** 2 + dy ** 2)
+            #     self.t = self.speed / 
+
+            
 
             dx, dy = self.speed * dx / distance, self.speed * dy / distance
             degree = function.get_degree(px, py, x, y)
@@ -98,6 +114,7 @@ class Bullet:
 
         if self.out_of_screen():
             gfw.world.remove(self)
+            
 
     def draw(self):
 

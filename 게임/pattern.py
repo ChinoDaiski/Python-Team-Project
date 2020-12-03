@@ -28,11 +28,11 @@ enemy01 = { 'image' : 'enemy01.png',
             'd_Mfidy' : '5',
             'last_line_image_count' : '1' }
 
-enemy01 = { 'image' : 'enemy01.png',
+enemy02 = { 'image' : 'enemy02.png',
             'Mfidx' : '12',
             'Mfidy' : '1',
-            'bullet_image' : 'enemy01_bullet.png',
-            'image_destroy' : 'enemy01_bomb.png',
+            'bullet_image' : 'enemy02_bullet.png',
+            'image_destroy' : 'enemy02_bomb.png',
             'd_Mfidx' : '5',
             'd_Mfidy' : '5',
             'last_line_image_count' : '1' }
@@ -150,6 +150,11 @@ def fire_pattern(pattern_Name, image_bullet, n, x, y, bullet_speed):
 
         # 나머지 2개는 자동 추적
         for n in range(3):
+            px, py = pos
+            px += (30 - 30 * n)
+            if n % 2 == 0:
+                py -= 30
+                
             blt = bullet.Bullet(image_bullet, *pos, *player_bullet_Size, bullet_speed, 30 / 3 * n + 80, player_bullet_alpha)
             if n == 0 or n == 2:
                 # enemy 레이어에 오브젝트가 있을 경우

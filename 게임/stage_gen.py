@@ -13,4 +13,4 @@ def draw():
     pass
 
 def load(file):
-    
+    pass

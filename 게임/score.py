@@ -27,5 +27,16 @@ class Score:
             score //= 10
 
     def update(self):
-    	if self.display < self.score:
+        trash = gfw.world.getTrashcan()
+        for e in trash:
+            if e.__class__.__name__ == 'enemy_Nomal':
+                self.score += 1
+                
+        if self.display < self.score:
             self.display += 10
+
+    def getScore(self):
+        return self.score()
+
+    def addScore(self, n):
+        self.score += n

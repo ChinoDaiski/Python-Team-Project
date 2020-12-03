@@ -165,6 +165,7 @@ class HorzScrollBackground:
     #     }
     #     canvas.restore();
     # }
+    
 class VertScrollBackground:
     def __init__(self, imageName, cw, ch, alpha):
         self.imageName = imageName
