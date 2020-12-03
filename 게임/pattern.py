@@ -18,25 +18,43 @@ enemy_bullet_speed = 3
 
 resource = 'res/'
 
-# 이미지, 최대 x, y 프레임, 탄의 이미지, 폭발 이미지, 폭발 이미지의 최대 x, y 프레임, 마지막 줄의 이미지 갯수
+
+# 01. 자신의 이미지
+# 02. 이미지 최대 x, y프레임
+# 03. 파괴 이미지
+# 04. 파괴 이미지 최대 x, y프레임, 마지막 줄의 이미지 숫자
+# 05. 시작 위치
+# 06. 도착 위치
+# 07. 탄 이미지
+# 08. 탄을 발사하는 패턴 번호
+# 09. 움직이는 패턴 번호
+# 10. 스피드
+# 11. 탄의 스피드
 enemy01 = { 'image' : 'enemy01.png',
             'Mfidx' : '12',
             'Mfidy' : '1',
-            'bullet_image' : 'enemy01_bullet.png',
             'image_destroy' : 'enemy01_bomb.png',
             'd_Mfidx' : '5',
             'd_Mfidy' : '5',
-            'last_line_image_count' : '1' }
+            'last_line_image_count' : '1',
+            'bullet_image' : 'enemy01_bullet.png',
+            'shooting_pattern : '1',
+            'moving_pattern : '1',
+            'speed' : '200',
+            'bullet_speed' : '300' }
 
 enemy02 = { 'image' : 'enemy02.png',
             'Mfidx' : '12',
             'Mfidy' : '1',
-            'bullet_image' : 'enemy02_bullet.png',
             'image_destroy' : 'enemy02_bomb.png',
             'd_Mfidx' : '5',
             'd_Mfidy' : '5',
-            'last_line_image_count' : '1' }
-
+            'last_line_image_count' : '1',
+            'bullet_image' : 'enemy02_bullet.png',
+            'shooting_pattern : '1',
+            'moving_pattern : '1',
+            'speed' : '200',
+            'bullet_speed' : '300' }
 
 # 플레이어 탄막 구성 정보
 # player
