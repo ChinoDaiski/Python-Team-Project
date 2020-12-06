@@ -136,11 +136,13 @@ class Player:
 
             self.fidx, self.fidy = function.sprite_selector(self.Mfidx, self.Mfidy, self.last_line_image_count, DestroyTime, self.player_detroy_delta_time)
 
-            if self.player_detroy_delta_time > DestroyTime:
-                gfw.world.remove(self)
+            # if self.player_detroy_delta_time > DestroyTime:
+            #     gfw.world.remove(self)
            
 
     def draw(self):
+        if self.player_detroy_delta_time > DestroyTime:
+            return
         if not self.bShotdown:
             # 플레이어 그리기
             x, y = self.pos

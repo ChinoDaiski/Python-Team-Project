@@ -38,8 +38,8 @@ enemy01 = { 'image' : 'enemy01.png',
             'd_Mfidy' : '5',
             'last_line_image_count' : '1',
             'bullet_image' : 'enemy01_bullet.png',
-            'shooting_pattern : '1',
-            'moving_pattern : '1',
+            'shooting_pattern' : '1',
+            'moving_pattern' : '1',
             'speed' : '200',
             'bullet_speed' : '300' }
 
@@ -51,8 +51,8 @@ enemy02 = { 'image' : 'enemy02.png',
             'd_Mfidy' : '5',
             'last_line_image_count' : '1',
             'bullet_image' : 'enemy02_bullet.png',
-            'shooting_pattern : '1',
-            'moving_pattern : '1',
+            'shooting_pattern' : '1',
+            'moving_pattern' : '1',
             'speed' : '200',
             'bullet_speed' : '300' }
 
