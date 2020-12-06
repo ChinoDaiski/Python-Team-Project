@@ -21,6 +21,8 @@ def init():
     index = 0
 
 def update():
+    global index
+
     if index >= len(enemies):
         return
 
@@ -41,6 +43,7 @@ def update():
         o.speed, o.bullet_speed, o.hp)#'enemy01_bullet.png', 4, 0, 100, 3, 10)
     gfw.world.add(gfw.layer.enemy, obj)
 
+    index += 1
 
 def draw():
     pass

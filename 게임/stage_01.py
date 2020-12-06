@@ -103,9 +103,9 @@ def enter():
     
     stage_gen.init()
     # 적 임시 생성
-    for n in range(100):
-        emy = enemy.enemy_Nomal('enemy01.png', 12, 1, 'enemy01_bomb.png', 5, 5, 1, x // 100 * n, y, 0, 0, 'enemy01_bullet.png', 4, 0, 100, 3, 10)
-        gfw.world.add(gfw.layer.enemy, emy)
+    # for n in range(10):
+    #     emy = enemy.enemy_Nomal('enemy01.png', 12, 1, 'enemy01_bomb.png', 5, 5, 1, x // 100 * n, y, 0, 0, 'enemy01_bullet.png', 4, 0, 100, 3, 10)
+    #     gfw.world.add(gfw.layer.enemy, emy)
 
 def update():
 
