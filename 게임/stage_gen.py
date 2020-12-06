@@ -14,7 +14,7 @@ class DictObj:
 
 def init():
     global enemies, time, index
-    with open('res/stage_01.json') as f:
+    with open('res/stage_02.json') as f:
         data = json.load(f)
         enemies = list(map(DictObj, data))
     time = 0
@@ -25,6 +25,9 @@ def update():
 
     if index >= len(enemies):
         return
+
+    # if gfw.world.count_at(gfw.layer.player) == 0:
+    #     return
 
     global time
     time += gfw.delta_time
