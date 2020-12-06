@@ -10,7 +10,7 @@ import enemy
 import collision
 import pattern
 from score import Score
-
+import stage_gen
 
 import pyautogui
 
@@ -101,6 +101,7 @@ def enter():
     x = MAP_SIZE[0] // 2
     y = MAP_SIZE[1]
     
+    stage_gen.init()
     # 적 임시 생성
     for n in range(100):
         emy = enemy.enemy_Nomal('enemy01.png', 12, 1, 'enemy01_bomb.png', 5, 5, 1, x // 100 * n, y, 0, 0, 'enemy01_bullet.png', 4, 0, 100, 3, 10)
@@ -110,6 +111,7 @@ def update():
 
     gfw.world.update()
     generator.update()
+    stage_gen.update()
 
     # if not gfw.world.count_at(gfw.layer.enemy) == 0:
     #     for n in gfw.world.objects_at(gfw.layer.enemy):
