@@ -8,6 +8,8 @@ import background
 import pattern
 from generator import *
 import function
+import collision
+import math
 
 resource = 'res/'
 
@@ -18,6 +20,9 @@ PLAYER_SIZE = 80, 120
 Bomb_Size = 80, 80
 
 DestroyTime = 1.0
+
+# 폭탄이 적용되는 시간(무적 시간)
+bomb_max_time = 5.0
 
 class Player:
     def __init__(self):
@@ -55,9 +60,6 @@ class Player:
         self.life = 3
         self.image_life = gfw.image.load(resource + 'life.png')
 
-        self.bomb = 2
-        self.image_bomb = gfw.image.load(resource + 'bomb.png')
-
         # 플레이어가 격추될 경우 사용하는 이미지
         self.image_shot_down = gfw.image.load(resource + 'bomb_player.png')
         self.fidx = 0
@@ -73,6 +75,24 @@ class Player:
         self.bullet_speed = 8
 
         self.power = 1
+
+        # 아이템 관련 이미지
+        self.image_bomb = gfw.image.load(resource + 'bomb.png')
+
+
+        # 플레이어의 폭탄과 관련된 변수
+        self.bomb = 2
+        self.image_player_bomb = gfw.image.load(resource + 'player_bomb.png')
+        self.player_bomb_delta_time = 0
+        self.bShootBomb = False
+        self.bombSize = 0, 0
+        self.bomb_angle = 0
+
+        # 스펠 출력과 관련된 변수
+        self.image_player_spell = gfw.image.load(resource + 'image_reimu_spell.png')
+        self.bSpell = False
+        self.SpellAlpha = 0
+
 
     def update(self):
         x, y = self.pos
@@ -131,16 +151,58 @@ class Player:
         player_delta_time += gfw.delta_time
 
         # 플레이어가 격추당했을 경우 실행되는 곳
-        if self.bShotdown == True:
+        if self.bShotdown == True and not self.bShootBomb:
             self.player_detroy_delta_time += gfw.delta_time
 
             self.fidx, self.fidy = function.sprite_selector(self.Mfidx, self.Mfidy, self.last_line_image_count, DestroyTime, self.player_detroy_delta_time)
 
             if self.player_detroy_delta_time > DestroyTime:
-                gfw.world.remove(self)
-           
+                self.new_life()
+
+        # 폭탄을 사용할 경우
+        global pos
+        if self.bShootBomb:
+            self.player_bomb_delta_time += gfw.delta_time
+            bw, bh = self.player_bomb_delta_time / bomb_max_time * pos[0], self.player_bomb_delta_time / bomb_max_time * pos[0]
+            self.bombSize = bw, bh
+
+            self.bomb_angle = 720 / bomb_max_time * self.player_bomb_delta_time * math.pi / 180
+            
+            bltlst = gfw.world.objects_at(gfw.layer.enemy_bullet)
+            for n in bltlst:
+                # ax, ay, radius_a, bx, by, radius_b
+                if collision.collides_distance2(*self.pos, self.bombSize[0], *n.pos, n.radius):
+                    gfw.world.remove(n)
+
+            if self.player_bomb_delta_time > bomb_max_time:
+                self.player_bomb_delta_time = 0
+                self.bShootBomb = False
+
+        if self.bSpell:
+            if self.player_bomb_delta_time < 0.5:
+                self.SpellAlpha = 255 * self.player_bomb_delta_time / 0.5
+            elif self.player_bomb_delta_time > 1.0:
+                self.bSpell = False
+
 
     def draw(self):
+
+        if self.bSpell:
+            # 스펠 그리기
+            gfw.image.setImageAlpha(self.image_player_spell, round(self.SpellAlpha))
+
+            self.image_player_spell.clip_draw_to_origin(0, 0, self.image_player_spell.w, self.image_player_spell.h, 0, 0, *gfw.world.getMapSize())
+
+        if self.bShootBomb:
+            # # 폭탄 그리기
+            x, y = self.pos
+            # x -= self.bombSize[0] // 2
+            # y -= self.bombSize[1] // 2
+            Pos = x, y
+            #self.image_player_bomb.clip_draw_to_origin(0, 0, self.image_player_bomb.w, self.image_player_bomb.h, *Pos, *self.bombSize)
+            self.image_player_bomb.composite_draw(self.bomb_angle, '', *Pos, *self.bombSize)
+
+
         if not self.bShotdown:
             # 플레이어 그리기
             x, y = self.pos
@@ -150,7 +212,7 @@ class Player:
             image.clip_draw_to_origin(image.w // 24 * (int)(self.dx), 0, image.w // 24, image.h, *Pos, *PLAYER_SIZE)
 
         else:
-            # 폭탄 그리기
+            # 터지는 모션 그리기
             x, y = self.pos
             x -= Bomb_Size[0] // 2
             y -= Bomb_Size[1] // 2
@@ -211,7 +273,7 @@ class Player:
         #=================
         if e.type == SDL_KEYDOWN:
             if e.key == SDLK_x:
-                self.destroy()
+                self.shootBomb()
 
     def fire(self):
         x, y = self.pos
@@ -226,3 +288,15 @@ class Player:
         self.player_detroy_delta_time = 0
         self.bShotdown = True
 
+    def new_life(self):
+        self.life -= 1
+        x, y = gfw.world.getMapSize()
+        pos = x // 2, 100
+        self.pos = pos
+        self.bShotdown = False
+
+    def shootBomb(self):
+        if self.bomb > 0:
+            self.bShootBomb = True
+            self.bomb -= 1
+            self.bSpell = True

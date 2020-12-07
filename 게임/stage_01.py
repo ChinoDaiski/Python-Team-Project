@@ -9,10 +9,8 @@ import generator
 import enemy
 import collision
 import pattern
+import stage_gen
 from score import Score
-
-
-import pyautogui
 
 resource = 'res/'
 
@@ -94,9 +92,11 @@ def enter():
     # 배경음악 관련 초기화
     global bg_music
     bg_music = load_wav(resource + 'stage01_background.wav')
-    bg_music.set_volume(50)
+    bg_music.set_volume(gfw.world.getSound())
     bg_music.play(1)
     
+    # 적 관련 초기화
+    stage_gen.init()
 
 def update():
 
@@ -114,6 +114,7 @@ def update():
     #print(gfw.world.count_at(gfw.layer.enemy))
     
     pattern.update()
+    stage_gen.update()
 
 def draw():
 
@@ -121,8 +122,8 @@ def draw():
 
    # 폰트 출력 부분
     global gap_w, gap_h
-    score_start_y = MAP_SIZE[1] - gap_h
-    gap = gap_w // 4
+    score_start_y = round(MAP_SIZE[1] - gap_h)
+    gap = round(gap_w // 4)
 
     # 최고 점수
     font.draw(MAP_SIZE[0] + gap, score_start_y, 'Hiscore', SCORE_TEXT_COLOR)

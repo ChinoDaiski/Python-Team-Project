@@ -7,7 +7,7 @@ objects = []
 trashcan = []
 
 map_size = (0, 0)
-sound = 0
+sound = 100
 
 def getSound():
     global sound

@@ -87,18 +87,16 @@ class enemy_Nomal:
         self.damage_effect_size = 0, 0
         self.bShotdown = False
 
-        standard = 0
         if enemey_size[0] >= enemey_size[1]:
             self.radius = enemey_size[0] // 2
         else:
             self.radius = enemey_size[1] // 2
-        standard = self.radius
 
         # 화면
-        self.bb_left = -standard
-        self.bb_bottom = -standard
-        self.bb_right = get_canvas_width() // 7 * 5 + standard
-        self.bb_top = get_canvas_height() + standard
+        self.bb_left = -enemey_size[0] * 2
+        self.bb_bottom = 0
+        self.bb_right = get_canvas_width() // 7 * 5 + enemey_size[0] * 2
+        self.bb_top = get_canvas_height() + enemey_size[0] * 2
 
         # 베지어 곡선 운동에 필요한 좌표
         mapX, mapY = gfw.world.getMapSize()
@@ -111,7 +109,6 @@ class enemy_Nomal:
         self.t = 0
 
     def update(self):
-        print(self.pos)
 
         self.delta_time += gfw.delta_time
         self.move_delta_time += gfw.delta_time
@@ -137,12 +134,10 @@ class enemy_Nomal:
                 dy = 0.0000001
 
             dx, dy = self.speed * dx / distance, self.speed * dy / distance
-            print(dx, dy)
             
             x += dx * self.MOVE_PPS * gfw.delta_time
             y += dy * self.MOVE_PPS * gfw.delta_time
                 
-            print(x, y)
             self.pos = x, y
 
         # 움직이는 패턴 2 - 2차 베지어 곡선 운동
@@ -159,9 +154,8 @@ class enemy_Nomal:
             x, y = (1 - t) ** 3 * self.startPos[0] + 3 * (1 - t) ** 2 * t * self.bezier_pos[0][0] + 3 * (1 - t) * t ** 2 * self.bezier_pos[2][0] + t ** 3 * self.dstPos[0], (1 - t) ** 3 * self.startPos[1] + 3 * (1 - t) ** 2 * t * self.bezier_pos[0][1] + 3 * (1 - t) * t ** 2 * self.bezier_pos[2][1] + t ** 3 * self.dstPos[1]
             self.pos = x, y
 
-
         # 탄 발사 패턴
-        if self.delta_time > 1.0:
+        if self.delta_time > 1.0 and not self.bShotdown:
             if not self.bShoot:
                 self.shoot()
                 self.bShoot = True

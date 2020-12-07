@@ -71,7 +71,6 @@ def update():
     delta_time += gfw.delta_time
     if delta_time > 1.0 and not gen:
         lst = generate_enemy(1, 1, 1)
-
         for n in lst:
             emy = enemy.enemy_Nomal(*n)
             gfw.world.add(gfw.layer.enemy, emy)
@@ -106,7 +105,7 @@ def generate_enemy(wayPoint, Count, attack_pattern):
     # 12. 체력
     # 13. MOVE_PPS
         for n in range(Num):
-            Info = ['enemy01.png', 12, 1, 'enemy01_bomb.png', 5, 5, 1, Tile[vt][round(hz / (Num + 1) * (n + 1))][0], Tile[vt][hz][1], Tile[vt][round(hz / (Num + 1) * (n + 1))][0], Tile[0][0][1], 'enemy01_bullet.png', 1, 1, 200, 300, 10, 2]
+            Info = ['enemy01.png', 12, 1, 'enemy01_bomb.png', 5, 5, 1, Tile[vt][round(hz / (Num + 1) * (n + 1))][0], Tile[vt][hz][1], Tile[vt][round(hz / (Num + 1) * (n + 1))][0], Tile[0][0][1], 'enemy01_bullet.png', 1, 1, 100, 2, 10, 2]
             Info_list.append(Info)
             
 

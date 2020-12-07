@@ -29,7 +29,7 @@ class Score:
     def update(self):
         trash = gfw.world.getTrashcan()
         for e in trash:
-            if e.__class__.__name__ == 'enemy_Nomal':
+            if e.__class__.__name__ == 'enemy_Nomal' and e.bShotdown:
                 self.score += 1
                 
         if self.display < self.score:

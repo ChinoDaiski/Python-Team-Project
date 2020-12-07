@@ -63,7 +63,10 @@ class Bullet:
         self.delta_time = 0
 
     def set_target(self, Object):
-        if Object in gfw.world.objects_at(gfw.layer.enemy):
+        if Object == None:
+            self.target_object.clear()
+
+        elif Object in gfw.world.objects_at(gfw.layer.enemy):
             self.target_object = Object
 
     def set_Bezier(self, x, y):
@@ -93,8 +96,6 @@ class Bullet:
             if dy == 0:
                 dy = 0.0000001
             
-
-
             dx, dy = self.speed * dx / distance, self.speed * dy / distance
             degree = function.get_degree(px, py, x, y)
             self.angle = (degree + 90) * math.pi / 180

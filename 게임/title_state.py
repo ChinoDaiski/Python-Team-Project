@@ -140,7 +140,7 @@ def handle_event(e):
             sound_btn.play()
 
             if selectNum == 0:
-                bg_music.__del__()
+                bg_music.stop()
                 gfw.push(stage_01)
 
             if selectNum == 1:
@@ -150,7 +150,7 @@ def handle_event(e):
                 gfw.push(option_state)
 
             if selectNum == 3:
-                bg_music.__del__()
+                bg_music.stop()
                 gfw.push(quit_state)
                 
 

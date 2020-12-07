@@ -92,7 +92,9 @@ def init():
     player_bullet_alpha = 150
 
     MAP_SIZE = gfw.world.getMapSize()
-
+    if MAP_SIZE[0] == 0 and MAP_SIZE[1] == 0:
+        MAP_SIZE = get_canvas_width() // 7 * 5, get_canvas_height()
+        
     i = 8   # 타일의 가로 갯수
     j = 12  # 타일의 세로 갯수
 
@@ -195,6 +197,8 @@ def fire_pattern(pattern_Name, image_bullet, n, x, y, bullet_speed):
 
                     if gfw.world.count_at(gfw.layer.enemy) > k:
                         blt.set_target(gfw.world.object(gfw.layer.enemy, k))
+                    else:
+                        blt.set_target(None)
 
                     mapX, mapY = gfw.world.getMapSize()
                     if n == 0:

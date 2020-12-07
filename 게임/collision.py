@@ -44,3 +44,14 @@ def collides_distance(a, b):
     
     # 제곱근은 구하는것은 시간이 오래걸리므로 서로 제곱을 하여 연산결과를 비교한다.
     return distance_sq < radius_sum ** 2
+
+
+
+# 충돌 처리를 위한 함수
+def collides_distance2(ax, ay, radius_a, bx, by, radius_b):
+    distance_sq = (ax - bx) ** 2 + (ay - by) ** 2
+    
+    radius_sum = radius_a + radius_b
+    
+    # 제곱근은 구하는것은 시간이 오래걸리므로 서로 제곱을 하여 연산결과를 비교한다.
+    return distance_sq < radius_sum ** 2
