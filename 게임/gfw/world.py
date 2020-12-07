@@ -7,7 +7,16 @@ objects = []
 trashcan = []
 
 map_size = (0, 0)
+sound = 0
 
+def getSound():
+    global sound
+    return sound
+    
+def setSound(n):
+    global sound
+    sound = n
+    
 def initMapSize(x, y):
     global map_size
     map_size = x, y

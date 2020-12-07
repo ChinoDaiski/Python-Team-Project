@@ -8,7 +8,7 @@ import gfw
 import title_state
 
 resource = 'res/'
-time = 3.0
+time = 4.0
 
 def enter():
     global image, elapsed
@@ -53,7 +53,6 @@ def update():
     elapsed += delta_time
     
     global image
-    
     global logo01, logo02, logo03
 
     if logo01 == False:
@@ -66,17 +65,17 @@ def update():
     elif logo02 == False:
         if elapsed >= time:
             gfw.image.unload(resource + 'logo02.png')
-            image = gfw.image.load(resource + 'logo03.png')
-            elapsed = 0.0
-            logo02 = True
+    #       image = gfw.image.load(resource + 'logo03.png')
+    #         elapsed = 0.0
+    #         logo02 = True
 
-    elif logo03 == False:
-         if elapsed >= time:
-             gfw.image.unload(resource + 'logo03.png')
-             logo03 = True
-             gfw.change(title_state)
+    # elif logo03 == False:
+    #      if elapsed >= time:
+    #          gfw.image.unload(resource + 'logo03.png')
+    #          logo03 = True
+            gfw.change(title_state)
 
-    print(alpha)
+    #print(alpha)
 
 def late_update():
     pass
@@ -88,7 +87,7 @@ def draw():
     SDL_SetTextureBlendMode(image.texture, SDL_BLENDMODE_BLEND)
     SDL_SetTextureAlphaMod(image.texture, int(alpha))
 
-    image.clip_draw_to_origin(0, 0, get_canvas_width(), get_canvas_height(), 0, 0, get_canvas_width(), get_canvas_height())
+    image.clip_draw_to_origin(0, 0, get_canvas_width(), get_canvas_height(), 0, 0, get_canvas_width()   , get_canvas_height())
 
 def handle_event(e):
     if e.type == SDL_QUIT:

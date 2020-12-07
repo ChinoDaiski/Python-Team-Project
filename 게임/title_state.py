@@ -20,15 +20,16 @@ import quit_state
 
 resource = 'res/'
 
-btnStartPosX = 100
-btnStartPosY = 60
-btnWidth = 600
-btnHeight = 300
-
 selectNum = 0
 btnArr = []
 
 def enter():
+
+    mapX, mapY = get_canvas_width(), get_canvas_height()
+    btnStartPosX = mapX // 20
+    btnStartPosY = mapY // 20
+    btnWidth = mapX // 4
+    btnHeight = mapY // 5
     
     # 월드에 bg, ui 추가
     gfw.world.init(['bg','ui'])
@@ -63,6 +64,18 @@ def enter():
     
     global selectNum
     selectNum = 0
+
+    global bg_music, sound_btn
+    bg_music = load_wav(resource + 'TitleState_background.wav')
+    if gfw.world.getSound() == 0:
+        bg_music.set_volume(50)
+    else:
+        bg_music.set_volume(gfw.world.getSound())
+
+    sound_btn = load_music(resource + 'sound_switch.mp3')
+    sound_btn.set_volume(255)
+
+    bg_music.play()
     
 def update():
     global frame, bg_3
@@ -112,6 +125,7 @@ def handle_event(e):
                 btnArr[selectNum].bSelect = False
                 selectNum -= 1
                 btnArr[selectNum].bSelect = True
+                sound_btn.play()
 
         elif e.key == SDLK_DOWN:
             if selectNum == 3:
@@ -120,9 +134,13 @@ def handle_event(e):
                 btnArr[selectNum].bSelect = False
                 selectNum += 1
                 btnArr[selectNum].bSelect = True
+                sound_btn.play()
 
         elif e.key == 13:
+            sound_btn.play()
+
             if selectNum == 0:
+                bg_music.__del__()
                 gfw.push(stage_01)
 
             if selectNum == 1:
@@ -132,7 +150,9 @@ def handle_event(e):
                 gfw.push(option_state)
 
             if selectNum == 3:
+                bg_music.__del__()
                 gfw.push(quit_state)
+                
 
 def exit():
     pass

@@ -38,8 +38,8 @@ enemy01 = { 'image' : 'enemy01.png',
             'd_Mfidy' : '5',
             'last_line_image_count' : '1',
             'bullet_image' : 'enemy01_bullet.png',
-            'shooting_pattern : '1',
-            'moving_pattern : '1',
+            'shooting_pattern' : '1',
+            'moving_pattern' : '1',
             'speed' : '200',
             'bullet_speed' : '300' }
 
@@ -51,8 +51,8 @@ enemy02 = { 'image' : 'enemy02.png',
             'd_Mfidy' : '5',
             'last_line_image_count' : '1',
             'bullet_image' : 'enemy02_bullet.png',
-            'shooting_pattern : '1',
-            'moving_pattern : '1',
+            'shooting_pattern' : '1',
+            'moving_pattern' : '1',
             'speed' : '200',
             'bullet_speed' : '300' }
 
@@ -178,7 +178,30 @@ def fire_pattern(pattern_Name, image_bullet, n, x, y, bullet_speed):
                 # enemy 레이어에 오브젝트가 있을 경우
                 p = gfw.world.count_at(gfw.layer.enemy)
                 if not p == 0:
-                    blt.set_target(gfw.world.object(gfw.layer.enemy, 0))
+                    k = 0
+                    bCheck = True
+                    # enemy 레이어의 정보 중 이미 격파된 것은 넘긴다.
+                    while bCheck:
+                        if not gfw.world.count_at(gfw.layer.enemy) == 0:
+                            obj = gfw.world.object(gfw.layer.enemy, k)
+                            if obj.bShotdown:
+                                k += 1
+                                bCheck = False
+                            else:
+                                bCheck = False
+                                
+                        else:
+                            bCheck = False
+
+                    if gfw.world.count_at(gfw.layer.enemy) > k:
+                        blt.set_target(gfw.world.object(gfw.layer.enemy, k))
+
+                    mapX, mapY = gfw.world.getMapSize()
+                    if n == 0:
+                        blt.set_Bezier(mapX, mapY // 2)
+                    elif n == 2:
+                        blt.set_Bezier(0, mapY // 2)
+
 
             # 없을 경우 일반 공격
             gfw.world.add(gfw.layer.bullet, blt)

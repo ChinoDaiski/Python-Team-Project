@@ -28,8 +28,9 @@ RESOURCE = 'res/'
 class Bullet:
     def __init__(self, image, x, y, size_x, size_y, speed, direction, alpha):
         # 총알의 이미지, 위치, 탄의 크기, 스피드, 이동 방향를 인자로 받음
+        self.startPos = x, y
         self.image = image
-        self.pos = x, y
+        self.pos = self.startPos
         self.size = size_x, size_y
         self.speed = speed
         self.direction = direction # 이동 방향은 각도를 의미한다.
@@ -57,7 +58,7 @@ class Bullet:
         self.target_object = []
 
         # 베지어 곡선 처리를 위한 값 설정
-        self.bezier = 0, 0
+        self.bezier_pos = 0, 0
         self.t = 0.0
         self.delta_time = 0
 
@@ -66,10 +67,11 @@ class Bullet:
             self.target_object = Object
 
     def set_Bezier(self, x, y):
-        self.bezier = x, y
+        self.bezier_pos = x, y
 
 
     def update(self):
+
         global x, y, dx, dy
         self.delta_time += gfw.delta_time
         # if self.delta_time 
@@ -90,16 +92,18 @@ class Bullet:
                 dx = 0.0000001
             if dy == 0:
                 dy = 0.0000001
-
-            # if not self.bezier == 0, 0:
-            #     distance2 = math.sqrt(dx ** 2 + dy ** 2)
-            #     self.t = self.speed / 
-
             
+
 
             dx, dy = self.speed * dx / distance, self.speed * dy / distance
             degree = function.get_degree(px, py, x, y)
             self.angle = (degree + 90) * math.pi / 180
+
+
+            self.t += MOVE_PPS / 1000 / 10
+            t = self.t
+            x, y = (1 - t) ** 2 * self.startPos[0] + 2 * (1 - t) * t * self.bezier_pos[0] + t ** 2 * self.target_object.pos[0], (1 - t) ** 2 * self.startPos[1] + 2 * (1 - t) * t * self.bezier_pos[1] + t ** 2 * self.target_object.pos[1]
+            self.pos = x, y
 
         # 일반적인 경우
         else:
@@ -107,10 +111,9 @@ class Bullet:
             dx, dy = self.speed * cos(self.direction * pi / 180), self.speed * sin(self.direction * pi / 180)
             self.angle = -math.atan2(dx, dy)
 
-        x += dx * MOVE_PPS * gfw.delta_time
-        y += dy * MOVE_PPS * gfw.delta_time
-            
-        self.pos = x, y
+            x += dx * MOVE_PPS * gfw.delta_time
+            y += dy * MOVE_PPS * gfw.delta_time
+            self.pos = x, y
 
         if self.out_of_screen():
             gfw.world.remove(self)
